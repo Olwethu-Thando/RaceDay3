@@ -1,0 +1,23 @@
+@model CategoryFormModel
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" placeholder="e.g. Under 20, Senior, 21km" maxlength="100" required />
+    <span asp-validation-for="Name" class="field-error"></span>
+</div>
+<div class="row g-3">
+    <div class="col-6">
+        <label asp-for="MinAge" class="form-label"></label>
+        <input asp-for="MinAge" type="number" min="0" max="120" class="form-control" />
+        <span asp-validation-for="MinAge" class="field-error"></span>
+    </div>
+    <div class="col-6">
+        <label asp-for="MaxAge" class="form-label"></label>
+        <input asp-for="MaxAge" type="number" min="0" max="120" class="form-control" />
+        <span asp-validation-for="MaxAge" class="field-error"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="DistanceKm" class="form-label"></label>
+        <input asp-for="DistanceKm" type="number" step="0.01" min="0.01" class="form-control" />
+        <span asp-validation-for="DistanceKm" class="field-error"></span>
+    </div>
+</div>

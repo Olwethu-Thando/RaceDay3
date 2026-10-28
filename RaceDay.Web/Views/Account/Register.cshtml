@@ -1,0 +1,92 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Sign up";
+}
+<div class="auth-wrap">
+    <div class="auth-card auth-card-wide">
+        <h1>Join RaceDay</h1>
+        <p class="text-muted">Choose how you'll use RaceDay.</p>
+        <form asp-action="Register" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row g-3 mb-3 role-choice">
+                <div class="col-sm-6">
+                    <input type="radio" class="btn-check" name="Role" id="role-participant" value="Participant" checked="@(Model.Role == "Participant")" />
+                    <label class="role-card" for="role-participant">
+                        <strong>Participant</strong>
+                        <span>Find events, enrol and track your results.</span>
+                    </label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="radio" class="btn-check" name="Role" id="role-organiser" value="Organiser" checked="@(Model.Role == "Organiser")" />
+                    <label class="role-card" for="role-organiser">
+                        <strong>Organiser</strong>
+                        <span>Create events, manage enrolments and publish results.</span>
+                    </label>
+                </div>
+                <span asp-validation-for="Role" class="field-error"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="FullName" class="field-error"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Email" class="field-error"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ContactNumber" class="form-label"></label>
+                    <input asp-for="ContactNumber" class="form-control" autocomplete="tel" />
+                    <span asp-validation-for="ContactNumber" class="field-error"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                    <div class="form-text">8 or more characters.</div>
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                </div>
+                <div class="col-12" id="organiserFields">
+                    <label asp-for="OrganisationName" class="form-label"></label>
+                    <input asp-for="OrganisationName" class="form-control" />
+                    <span asp-validation-for="OrganisationName" class="field-error"></span>
+                </div>
+                <div class="col-12" id="participantFields">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                    <div class="form-text">Used to check the age range of the categories you enter.</div>
+                    <span asp-validation-for="DateOfBirth" class="field-error"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-rd w-100 mt-4">Create account</button>
+        </form>
+        <p class="auth-switch">Already registered? <a asp-action="Login">Log in</a></p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var radios = document.querySelectorAll('input[name="Role"]');
+            var organiser = document.getElementById('organiserFields');
+            var participant = document.getElementById('participantFields');
+            function sync() {
+                var role = document.querySelector('input[name="Role"]:checked');
+                var isOrganiser = role && role.value === 'Organiser';
+                organiser.style.display = isOrganiser ? '' : 'none';
+                participant.style.display = isOrganiser ? 'none' : '';
+            }
+            radios.forEach(function (r) { r.addEventListener('change', sync); });
+            sync();
+        })();
+    </script>
+}

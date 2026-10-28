@@ -1,0 +1,50 @@
+@model ResultsViewModel
+@{
+    ViewData["Title"] = "Results";
+}
+<div class="page-head">
+    <div>
+        <h1>Results</h1>
+        <p class="text-muted mb-0">@Model.Event.Name &middot; @Format.DateText(Model.Event.EventDate)</p>
+    </div>
+    <a class="btn btn-rd-outline" asp-controller="ManageEvents" asp-action="Index">Back to events</a>
+</div>
+<partial name="_Alerts" />
+<p class="text-muted">Saved results are published straight away and show on the public event page.</p>
+
+@if (!Model.Rows.Any())
+{
+    <div class="empty-state"><h2>No participants to score</h2><p>Results can be entered once participants have enrolled.</p></div>
+}
+else
+{
+    foreach (var row in Model.Rows)
+    {
+        var r = row.Result;
+        var secs = r?.FinishTimeSeconds ?? 0;
+        <form asp-action="Save" method="post" class="result-row">
+            <input type="hidden" name="EventId" value="@Model.Event.EventId" />
+            <input type="hidden" name="EnrolmentId" value="@row.Enrolment.EnrolmentId" />
+            @if (r != null)
+            {
+                <input type="hidden" name="ResultId" value="@r.ResultId" />
+            }
+            <div class="result-who">
+                <strong>@row.Enrolment.ParticipantName</strong>
+                <span>@row.Enrolment.CategoryName</span>
+                @if (r != null)
+                {
+                    <span class="result-saved">Published: @Format.Ordinal(r.FinishPosition) of @r.TotalFinishers, @r.FinishTime</span>
+                }
+            </div>
+            <div class="result-fields">
+                <label>Hours<input type="number" name="Hours" min="0" max="999" value="@(secs / 3600)" class="form-control" /></label>
+                <label>Min<input type="number" name="Minutes" min="0" max="59" value="@(secs % 3600 / 60)" class="form-control" /></label>
+                <label>Sec<input type="number" name="Seconds" min="0" max="59" value="@(secs % 60)" class="form-control" /></label>
+                <label>Position<input type="number" name="Position" min="1" value="@(r?.FinishPosition ?? 1)" class="form-control" required /></label>
+                <label>Finishers<input type="number" name="TotalFinishers" min="1" value="@(r?.TotalFinishers ?? Model.Rows.Count)" class="form-control" required /></label>
+                <button type="submit" class="btn btn-rd">@(r == null ? "Publish" : "Update")</button>
+            </div>
+        </form>
+    }
+}

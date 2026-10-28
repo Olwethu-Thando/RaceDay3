@@ -1,0 +1,64 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="page-head">
+    <h1>Organiser dashboard</h1>
+    <a class="btn btn-rd" asp-controller="ManageEvents" asp-action="Create">Create event</a>
+</div>
+<partial name="_Alerts" />
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-4"><div class="stat-card"><span class="stat-number">@Model.AllEvents.Count</span><span class="stat-label">Events created</span></div></div>
+    <div class="col-sm-4"><div class="stat-card"><span class="stat-number">@Model.TotalEnrolments</span><span class="stat-label">Total enrolments</span></div></div>
+    <div class="col-sm-4"><div class="stat-card"><span class="stat-number">@Model.Upcoming.Count</span><span class="stat-label">Upcoming events</span></div></div>
+</div>
+
+<h2 class="section-title">Upcoming events</h2>
+@if (!Model.Upcoming.Any())
+{
+    <div class="empty-state small-empty"><p>No upcoming events. Create one to get started.</p></div>
+}
+else
+{
+    <div class="row g-3 mb-4">
+        @foreach (var e in Model.Upcoming.Take(6))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="upcoming-card">
+                    <div class="upcoming-date">@e.EventDate.ToString("d MMM")<small>@e.EventDate.ToString("yyyy")</small></div>
+                    <div>
+                        <h3>@e.Name</h3>
+                        <p>@e.Location &middot; @(e.EnrolmentCount ?? 0) enrolled</p>
+                        <a asp-controller="Enrolments" asp-action="Index" asp-route-eventId="@e.EventId">View enrolments</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<h2 class="section-title">All events</h2>
+@if (!Model.AllEvents.Any())
+{
+    <p class="text-muted">You haven't created any events yet.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table">
+            <thead><tr><th>Event</th><th>Date</th><th>Type</th><th class="text-end">Enrolments</th></tr></thead>
+            <tbody>
+            @foreach (var e in Model.AllEvents)
+            {
+                <tr>
+                    <td><a asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId">@e.Name</a></td>
+                    <td>@Format.DateText(e.EventDate)</td>
+                    <td>@e.EventType</td>
+                    <td class="text-end">@(e.EnrolmentCount ?? 0)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

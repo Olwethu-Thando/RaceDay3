@@ -1,0 +1,55 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Upcoming events";
+}
+<section class="hero">
+    <p class="hero-kicker">Run. Walk. Ride.</p>
+    <h1>FIND YOUR NEXT <em>RACE</em></h1>
+    <p class="hero-sub">Browse upcoming events, pick your category and get on the start line.</p>
+</section>
+
+<partial name="_Alerts" />
+@if (Model.Error != null)
+{
+    <div class="alert alert-warning">@Model.Error</div>
+}
+
+<form method="get" class="filter-bar" aria-label="Filter events">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label" for="eventType">Event type</label>
+            <select id="eventType" name="eventType" class="form-select">
+                <option value="">All types</option>
+                @foreach (var t in new[] { "Run", "Walk", "Cycle" })
+                {
+                    <option value="@t" selected="@(Model.EventType == t)">@t</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label" for="location">Location</label>
+            <input id="location" name="location" class="form-control" value="@Model.Location" placeholder="e.g. Johannesburg" />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-rd">Apply filters</button>
+            <a class="btn btn-rd-outline" asp-action="Index">Reset</a>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Events.Any())
+{
+    <div class="empty-state">
+        <h2>No events found</h2>
+        <p>Try a different type or location, or check back soon.</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col-md-6 col-lg-4"><partial name="_EventCard" model="ev" /></div>
+        }
+    </div>
+}

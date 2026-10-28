@@ -1,0 +1,33 @@
+@model List<EnrolmentResponse>
+@{
+    ViewData["Title"] = "My enrolments";
+}
+<div class="page-head">
+    <h1>My enrolments</h1>
+    <a class="btn btn-rd" asp-controller="Home" asp-action="Index">Find events</a>
+</div>
+<partial name="_Alerts" />
+
+@if (!Model.Any())
+{
+    <div class="empty-state"><h2>You haven't enrolled yet</h2><p>Browse upcoming events and pick your first race.</p></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td><a asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId">@e.EventName</a></td>
+                    <td>@Format.DateTimeText(e.EventDate)</td>
+                    <td>@e.CategoryName</td>
+                    <td><partial name="_StatusBadge" model="e.Status" /></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

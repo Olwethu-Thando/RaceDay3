@@ -1,0 +1,6 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+RaceDay.Api/wwwroot/uploads/

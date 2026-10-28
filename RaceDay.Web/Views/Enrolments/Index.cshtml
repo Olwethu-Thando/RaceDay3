@@ -1,0 +1,50 @@
+@model EnrolmentsViewModel
+@{
+    ViewData["Title"] = "Enrolments";
+}
+<div class="page-head">
+    <div>
+        <h1>Enrolments</h1>
+        <p class="text-muted mb-0">@Model.Event.Name &middot; @Format.DateText(Model.Event.EventDate)</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-rd" asp-controller="Results" asp-action="Index" asp-route-eventId="@Model.Event.EventId">Enter results</a>
+        <a class="btn btn-rd-outline" asp-controller="ManageEvents" asp-action="Index">Back to events</a>
+    </div>
+</div>
+<partial name="_Alerts" />
+
+@if (!Model.Enrolments.Any())
+{
+    <div class="empty-state"><h2>No one has enrolled yet</h2><p>Enrolments appear here as soon as participants sign up.</p></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead><tr><th>Participant</th><th>Category</th><th>Enrolled</th><th>Status</th><th class="text-end">Update status</th></tr></thead>
+            <tbody>
+            @foreach (var e in Model.Enrolments)
+            {
+                <tr>
+                    <td>@e.ParticipantName</td>
+                    <td>@e.CategoryName</td>
+                    <td>@Format.DateText(e.EnrolmentDate)</td>
+                    <td><partial name="_StatusBadge" model="e.Status" /></td>
+                    <td class="text-end">
+                        <form asp-action="SetStatus" asp-route-eventId="@Model.Event.EventId" asp-route-id="@e.EnrolmentId" method="post" class="d-inline-flex gap-2">
+                            <select name="status" class="form-select form-select-sm" aria-label="New status">
+                                @foreach (var s in new[] { "Pending", "Confirmed", "Cancelled" })
+                                {
+                                    <option value="@s" selected="@(e.Status == s)">@s</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-rd">Save</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,15 @@
+@model EventFormModel
+@{
+    ViewData["Title"] = "Edit event";
+}
+<div class="page-head"><h1>Edit event</h1></div>
+<div class="form-card">
+    <form asp-action="Edit" asp-route-id="@Model.EventId" method="post" enctype="multipart/form-data" novalidate>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <partial name="_EventForm" model="Model" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-rd">Save changes</button>
+            <a class="btn btn-rd-outline" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

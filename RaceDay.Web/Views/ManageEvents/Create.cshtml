@@ -1,0 +1,15 @@
+@model EventFormModel
+@{
+    ViewData["Title"] = "Create event";
+}
+<div class="page-head"><h1>Create event</h1></div>
+<div class="form-card">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <partial name="_EventForm" model="Model" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-rd">Create event</button>
+            <a class="btn btn-rd-outline" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

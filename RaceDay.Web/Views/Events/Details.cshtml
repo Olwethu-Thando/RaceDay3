@@ -1,0 +1,134 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    ViewData["Title"] = ev.Name;
+    var banner = Api.ImageUrl(ev.BannerImageUrl);
+    var typeClass = "type-" + ev.EventType.ToLowerInvariant();
+    var isParticipant = User.IsInRole("Participant");
+    var isOrganiser = User.IsInRole("Organiser");
+    var isPast = ev.EventDate < DateTime.Now;
+    var categories = ev.Categories ?? new List<CategoryResponse>();
+}
+<partial name="_Alerts" />
+
+<div class="event-hero @typeClass">
+    @if (banner != null)
+    {
+        <img src="@banner" alt="Banner for @ev.Name" />
+    }
+    else
+    {
+        <span class="event-card-glyph">@ev.EventType.ToUpperInvariant()</span>
+    }
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-8">
+        <span class="type-pill @typeClass static">@ev.EventType</span>
+        <h1 class="event-title">@ev.Name</h1>
+        <ul class="event-facts">
+            <li><span>When</span>@Format.DateTimeText(ev.EventDate)</li>
+            <li><span>Where</span>@ev.Location</li>
+            <li><span>Distance</span>@ev.DistanceKm.ToString("0.##") km</li>
+        </ul>
+
+        @if (!string.IsNullOrWhiteSpace(ev.Description))
+        {
+            <h2 class="section-title">About this event</h2>
+            <p class="event-description">@ev.Description</p>
+        }
+
+        <h2 class="section-title">Categories</h2>
+        @if (!categories.Any())
+        {
+            <p class="text-muted">The organiser hasn't added categories yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table rd-table">
+                    <thead><tr><th>Category</th><th>Ages</th><th>Distance</th></tr></thead>
+                    <tbody>
+                    @foreach (var c in categories)
+                    {
+                        <tr>
+                            <td>@c.Name</td>
+                            <td>@Format.AgeRange(c.MinAge, c.MaxAge)</td>
+                            <td>@(c.DistanceKm.HasValue ? c.DistanceKm.Value.ToString("0.##") + " km" : "-")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (Model.Results.Any())
+        {
+            <h2 class="section-title">Results</h2>
+            <div class="table-responsive">
+                <table class="table rd-table">
+                    <thead><tr><th>Pos</th><th>Name</th><th>Category</th><th>Time</th></tr></thead>
+                    <tbody>
+                    @foreach (var r in Model.Results.OrderBy(r => r.FinishPosition))
+                    {
+                        <tr>
+                            <td>@Format.Ordinal(r.FinishPosition)</td>
+                            <td>@r.ParticipantName</td>
+                            <td>@r.CategoryName</td>
+                            <td>@r.FinishTime</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <aside class="enrol-card">
+            <h2>Enrol</h2>
+            @if (isParticipant && Model.ExistingEnrolment != null)
+            {
+                <p>You're enrolled in <strong>@Model.ExistingEnrolment.CategoryName</strong>.</p>
+                <p>Status: <partial name="_StatusBadge" model="Model.ExistingEnrolment.Status" /></p>
+                <a class="btn btn-rd-outline w-100" asp-controller="Participant" asp-action="MyEnrolments">View my enrolments</a>
+            }
+            else if (isParticipant && isPast)
+            {
+                <p class="text-muted">This event has already taken place.</p>
+            }
+            else if (isParticipant && !categories.Any())
+            {
+                <p class="text-muted">Enrolment opens once the organiser adds categories.</p>
+            }
+            else if (isParticipant)
+            {
+                <form asp-action="Enrol" asp-route-id="@ev.EventId" method="post">
+                    <label class="form-label" for="categoryId">Choose your category</label>
+                    <select id="categoryId" name="categoryId" class="form-select mb-3" required>
+                        <option value="">Select a category</option>
+                        @foreach (var c in categories)
+                        {
+                            <option value="@c.CategoryId">@c.Name (@Format.AgeRange(c.MinAge, c.MaxAge))</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-rd w-100">Enrol now</button>
+                </form>
+            }
+            else if (isOrganiser)
+            {
+                <p class="text-muted">Organiser accounts can't enrol. Use the Organiser tools to manage this event.</p>
+                @if (ev.OrganiserId.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                {
+                    <a class="btn btn-rd-outline w-100" asp-controller="ManageEvents" asp-action="Edit" asp-route-id="@ev.EventId">Edit this event</a>
+                }
+            }
+            else
+            {
+                <p>Log in as a Participant to enrol.</p>
+                <a class="btn btn-rd w-100 mb-2" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Events", new { id = ev.EventId })">Log in</a>
+                <a class="btn btn-rd-outline w-100" asp-controller="Account" asp-action="Register">Create an account</a>
+            }
+        </aside>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+@model List<EventResponse>
+@{
+    ViewData["Title"] = "My events";
+}
+<div class="page-head">
+    <h1>My events</h1>
+    <a class="btn btn-rd" asp-action="Create">Create event</a>
+</div>
+<partial name="_Alerts" />
+
+@if (!Model.Any())
+{
+    <div class="empty-state"><h2>No events yet</h2><p>Create your first event to start taking enrolments.</p></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Type</th><th>Location</th><th class="text-end">Enrolled</th><th class="text-end">Manage</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td><strong>@e.Name</strong><div class="small text-muted">@e.DistanceKm.ToString("0.##") km</div></td>
+                    <td>@Format.DateTimeText(e.EventDate)</td>
+                    <td><span class="type-pill type-@e.EventType.ToLowerInvariant() static">@e.EventType</span></td>
+                    <td>@e.Location</td>
+                    <td class="text-end">@(e.EnrolmentCount ?? 0)</td>
+                    <td class="text-end action-cell">
+                        <a class="btn btn-sm btn-rd-outline" asp-action="Edit" asp-route-id="@e.EventId">Edit</a>
+                        <a class="btn btn-sm btn-rd-outline" asp-controller="Categories" asp-action="Index" asp-route-eventId="@e.EventId">Categories</a>
+                        <a class="btn btn-sm btn-rd-outline" asp-controller="Enrolments" asp-action="Index" asp-route-eventId="@e.EventId">Enrolments</a>
+                        <a class="btn btn-sm btn-rd-outline" asp-controller="Results" asp-action="Index" asp-route-eventId="@e.EventId">Results</a>
+                        <form asp-action="Delete" asp-route-id="@e.EventId" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this event? Its categories, enrolments and results will be removed too.');">
+                            <button type="submit" class="btn btn-sm btn-danger-soft">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
