@@ -25,7 +25,7 @@ Browser  ->  RaceDay.Web (MVC)  ->  RaceDay.Api (Web API)  ->  SQL Server
                                             +->  Azure Blob Storage (images)
 ```
 
-* **Session management.** On login the MVC app calls `POST /api/auth/login`, keeps the API's session cookie in the **server-side ASP.NET Core session**, and issues its own cookie holding only the user id, name and role. The API cookie is never sent to the browser. Every API call forwards it. Logging out clears both and calls `POST /api/auth/logout`.
+* **Session management.** On login the MVC app calls `POST /api/auth/login`, keeps the API's session cookie in the **server-side ASP.NET Core session**, and issues its own cookie holding only the users id, name and role. The API cookie is never sent to the browser. Every API call forwards it. Logging out clears both and calls `POST /api/auth/logout`.
 * **Role-based navigation.** The navbar and pages change per role; controllers use `[Authorize(Roles = ...)]`.
 * **Azure Blob Storage.** Only the API talks to Azure. The MVC app uploads the image to the API (`/api/events/{id}/banner`, `/api/users/me/profilepicture`), which stores it in Blob Storage and returns the URL.
 * **Error handling.** API problems are turned into friendly messages; unexpected errors show a branded error page, never a stack trace.
