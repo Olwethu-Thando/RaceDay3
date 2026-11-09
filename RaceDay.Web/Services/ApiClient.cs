@@ -285,8 +285,8 @@ public class ApiClient
         {
             HttpStatusCode.BadRequest => "Please check the information you entered and try again.",
             HttpStatusCode.Forbidden => "You are not allowed to do that.",
-            HttpStatusCode.NotFound => "We couldn't find what you were looking for.",
-            HttpStatusCode.Conflict => "That clashes with something that already exists.",
+            HttpStatusCode.NotFound => "We could not find what you were looking for at the moment .",
+            HttpStatusCode.Conflict => "That clashes with something that already exists please login .",
             _ => "Something went wrong. Please try again."
         };
     }
