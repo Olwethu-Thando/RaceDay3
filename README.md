@@ -43,7 +43,7 @@ Prerequisites: Visual Studio 2022, .NET 8 SDK, SQL Server LocalDB/Express.
    ```
 4. Right-click the solution -> **Configure Startup Projects** -> **Multiple startup projects**: set `RaceDay.Api` and `RaceDay.Web` to **Start**, then press F5.
    * API: https://localhost:7053/swagger
-   * Web: https://localhost:7100
+   * Web:https://localhost:7100/
 5. The web app reads the API address from `RaceDay.Web/appsettings.json` (`Api:BaseUrl`).
 
 ## Azure Blob Storage setup
