@@ -71,7 +71,7 @@ public class ApiClient
 
     public Task<ApiResult<object>> LogoutAsync() => SendAsync<object>(HttpMethod.Post, "api/auth/logout", null, true);
 
-    // ---------------- Profile ----------------
+    // ---------------- Profile user  ----------------
 
     public Task<ApiResult<ProfileResponse>> GetProfileAsync() =>
         SendAsync<ProfileResponse>(HttpMethod.Get, "api/users/me", null, true);
