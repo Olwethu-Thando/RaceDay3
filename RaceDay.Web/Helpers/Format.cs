@@ -1,6 +1,7 @@
 namespace RaceDay.Web.Helpers;
 
 public static class Format
+    // creating a class 
 {
     public static string Ordinal(int n)
     {
