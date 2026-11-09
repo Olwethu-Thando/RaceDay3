@@ -88,7 +88,7 @@ public class ApiClient
     public Task<ApiResult<ProfilePictureResponse>> UploadProfilePictureAsync(IFormFile file) =>
         SendAsync<ProfilePictureResponse>(HttpMethod.Post, "api/users/me/profilepicture", ImageContent(file), true);
 
-    // ---------------- Events ----------------
+    // ---------------- Events screen  ----------------
 
     public Task<ApiResult<List<EventResponse>>> GetEventsAsync(string? eventType, string? location)
     {
