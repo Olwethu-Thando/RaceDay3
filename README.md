@@ -92,4 +92,4 @@ GitHub Actions (`.github/workflows/ci.yml`) restores, builds the whole solution 
 
 ## Demo video
 
-YouTube (unlisted): _paste link here_
+YouTube https://youtu.be/WZpOrYhwcUQ?si=PpdXK7jmb6kYjt2a
